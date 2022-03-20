@@ -35,3 +35,13 @@
 
 // const myArea = new Rectangle(5, 6);
 // console.log(myArea.calcArea());
+
+
+
+// Rest Operator (a, b, ...rest)
+
+// const log = function(a, b, ...rest) {
+//     console.log(a, b, rest);
+// }
+
+// log('basic', 'rest', 'operator', 'usage');
