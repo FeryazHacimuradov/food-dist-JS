@@ -1,3 +1,4 @@
+'use strict';
 // const timerId = setTimeout(logger, 2000);
 
 // clearInterval(timerId);
@@ -45,3 +46,10 @@
 // }
 
 // log('basic', 'rest', 'operator', 'usage');
+
+// const persone = {
+//     name: 'Faryaz',
+//     tel: '+994559259929'
+// };
+
+// console.log(JSON.parse(JSON.stringify(persone)));
