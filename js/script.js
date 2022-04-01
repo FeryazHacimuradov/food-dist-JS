@@ -41,7 +41,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     // Timer
 
-    const deadline = '2022-05-11';
+    const deadline = '2020-05-11';
 
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
@@ -129,7 +129,6 @@ window.addEventListener('DOMContentLoaded', function() {
     });
 
     const modalTimerId = setTimeout(openModal, 300000);
-    // Изменил значение, чтобы не отвлекало
 
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
@@ -138,8 +137,6 @@ window.addEventListener('DOMContentLoaded', function() {
         }
     }
     window.addEventListener('scroll', showModalByScroll);
-
-    // Используем классы для создание карточек меню
 
     class MenuCard {
         constructor(src, alt, title, descr, price, parentSelector, ...classes) {
@@ -182,27 +179,10 @@ window.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    const getResource = async(url) => {
-        const res = await fetch(url);
-
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, status ${res.status}`);
-        }
-
-        return await res.json();
-    };
-
-    // getResource('http://localhost:3000/menu')
-    //     .then(data => {
-    //         data.forEach(({ img, altimg, title, descr, price }) => {
-    //             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
-    //         });
-    //     });
-
-    axios.get('http://localhost:3000/menu')
+    getResource('http://localhost:3000/menu')
         .then(data => {
-            data.data.forEach(({ img, altimg, title, descr, price }) => {
-                new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+            data.forEach(({ img, altimg, title, descr, price }) => {
+                new MenuCard(img, altimg, title, descr, price, ".menu .container").render();
             });
         });
 
@@ -220,16 +200,26 @@ window.addEventListener('DOMContentLoaded', function() {
     });
 
     const postData = async(url, data) => {
-        const res = await fetch(url, {
+        let res = await fetch(url, {
             method: "POST",
             headers: {
-                'Content-type': 'application/json'
+                'Content-Type': 'application/json'
             },
             body: data
         });
 
         return await res.json();
     };
+
+    async function getResource(url) {
+        let res = await fetch(url);
+
+        if (!res.ok) {
+            throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+        }
+
+        return await res.json();
+    }
 
     function bindPostData(form) {
         form.addEventListener('submit', (e) => {
@@ -252,11 +242,9 @@ window.addEventListener('DOMContentLoaded', function() {
                     console.log(data);
                     showThanksModal(message.success);
                     statusMessage.remove();
-                })
-                .catch(() => {
+                }).catch(() => {
                     showThanksModal(message.failure);
-                })
-                .finally(() => {
+                }).finally(() => {
                     form.reset();
                 });
         });
@@ -285,7 +273,7 @@ window.addEventListener('DOMContentLoaded', function() {
         }, 4000);
     }
 
-    // Sider
+    // Slider
 
     let offset = 0;
     let slideIndex = 1;
@@ -363,10 +351,10 @@ window.addEventListener('DOMContentLoaded', function() {
     }
 
     next.addEventListener('click', () => {
-        if (offset == (+width.slice(0, width.length - 2) * (slides.length - 1))) {
+        if (offset == (deleteNotDigits(width) * (slides.length - 1))) {
             offset = 0;
         } else {
-            offset += +width.slice(0, width.length - 2);
+            offset += deleteNotDigits(width);
         }
 
         slidesField.style.transform = `translateX(-${offset}px)`;
@@ -389,9 +377,9 @@ window.addEventListener('DOMContentLoaded', function() {
 
     prev.addEventListener('click', () => {
         if (offset == 0) {
-            offset = +width.slice(0, width.length - 2) * (slides.length - 1);
+            offset = deleteNotDigits(width) * (slides.length - 1);
         } else {
-            offset -= +width.slice(0, width.length - 2);
+            offset -= deleteNotDigits(width);
         }
 
         slidesField.style.transform = `translateX(-${offset}px)`;
@@ -417,7 +405,7 @@ window.addEventListener('DOMContentLoaded', function() {
             const slideTo = e.target.getAttribute('data-slide-to');
 
             slideIndex = slideTo;
-            offset = +width.slice(0, width.length - 2) * (slideTo - 1);
+            offset = deleteNotDigits(width) * (slideTo - 1);
 
             slidesField.style.transform = `translateX(-${offset}px)`;
 
@@ -431,4 +419,8 @@ window.addEventListener('DOMContentLoaded', function() {
             dots[slideIndex - 1].style.opacity = 1;
         });
     });
+
+    function deleteNotDigits(str) {
+        return +str.replace(/\D/g, '');
+    }
 });

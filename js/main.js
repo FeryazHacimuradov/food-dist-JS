@@ -156,3 +156,5 @@
 //     .map(item => item[0]);
 
 // console.log(newArr);
+
+//Local storage
